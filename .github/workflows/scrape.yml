@@ -18,7 +18,6 @@ jobs:
       - name: execute py script # run the run.py to get the latest data
         run: |
           python nyc_pull_covid_data.py
-        env:
       - name: Commit and push if it changed
         run: |-
           git config user.name "Automated"
