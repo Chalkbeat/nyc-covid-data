@@ -3,8 +3,6 @@ import pandas as pd
 
 SCHOOLS_BASE = "https://raw.githubusercontent.com/Chalkbeat/nyc-covid-data/main/schools_base.csv"
 df = pd.read_csv(SCHOOLS_BASE)
-df = df.loc[:,["BEDSCode","InstitutionName","RecTypeLong","StreetAddress","City","State","Zip+4"]]
-df.columns = ["BEDSCode","InstitutionName","RecTypeLong","StreetAddress","City","State","Zip"]
 
 def prepend(list, str):
     str += '{0}'
@@ -18,12 +16,14 @@ lookup_df = pd.DataFrame()
 
 for row in df.itertuples():
   bedscode = row.BEDSCode
-  rectype = row.RecTypeLong
-  name = row.InstitutionName
-  address = row.StreetAddress
-  city = row.City
-  state = row.State
-  zip = row.Zip
+  rectype = row.rectype
+  name = row.school_name
+  address = row.address
+  city = row.city
+  state = row.state
+  zip = row.zip
+  longitude = row.longitude
+  latitude = row.latitude
 
   if rectype == "Public":
     url = "https://schoolcovidreportcard.health.ny.gov/data/public/school.300000."+bedscode+".json"
@@ -50,15 +50,15 @@ for row in df.itertuples():
     pastWeekCounts = pd.DataFrame(json['pastWeekCounts'], index=[0])
     pastWeekCounts.columns = prepend(pastWeekCounts.columns, 'pastWeekCounts_')
 
-    new_row = pd.DataFrame([[bedscode, url, status, rectype, name, address, city, state, zip, schoolType, teachingModel, updateDate, publishDate]])
-    new_row.columns=["BEDSCode", "url", "status", "recType", "name", "address", "city", "state", "zip", "schoolType", "teachingModel", "updateDate", "publishDate"]
+    new_row = pd.DataFrame([[bedscode, url, status, rectype, name, address, city, state, zip, longitude, latitude, schoolType, teachingModel, updateDate, publishDate]])
+    new_row.columns=["BEDSCode", "url", "status", "recType", "name", "address", "city", "state", "zip", "longitude", "latitude", "schoolType", "teachingModel", "updateDate", "publishDate"]
     new_row = pd.concat([new_row, currentCounts, todayCounts, allTimeCounts, pastWeekCounts], axis=1)
     lookup_df = lookup_df.append([new_row], ignore_index=True)
 
   else:
     status = "not reported"
-    new_row = pd.DataFrame([[bedscode, url, status, rectype, name, address, city, state, zip]])
-    new_row.columns=["BEDSCode", "url", "status", "recType", "name", "address", "city", "state", "zip"]
+    new_row = pd.DataFrame([[bedscode, url, status, rectype, name, address, city, state, zip, longitude, latitude]])
+    new_row.columns=["BEDSCode", "url", "status", "recType", "name", "address", "city", "state", "zip", "longitude", "latitude"]
     lookup_df = lookup_df.append([new_row], ignore_index=True)
 
 lookup_df.to_csv("nyc_schools_covid_data.csv", index=False)
