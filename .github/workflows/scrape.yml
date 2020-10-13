@@ -2,7 +2,7 @@ name: pull NYC schools data
 
 on:
   schedule:
-    - cron: "41 3 * * *" #runs at 00:00 UTC everyday
+    - cron: "58 3 * * *" #runs at 00:00 UTC everyday
 
 jobs:
   build:

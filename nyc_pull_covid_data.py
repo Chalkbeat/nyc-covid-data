@@ -26,11 +26,11 @@ for row in df.itertuples():
   latitude = row.latitude
 
   if rectype == "Public":
-    url = "https://schoolcovidreportcard.health.ny.gov/data/public/school.300000."+bedscode+".json"
+    url = "https://schoolcovidreportcard.health.ny.gov/data/public/school.300000."+str(bedscode)+".json"
   if rectype == "Charter":
-    url = "https://schoolcovidreportcard.health.ny.gov/data/charter/school.charter."+bedscode+".json"
+    url = "https://schoolcovidreportcard.health.ny.gov/data/charter/school.charter."+str(bedscode)+".json"
   if rectype == "Private" or rectype == "Non-Public":
-    url = "https://schoolcovidreportcard.health.ny.gov/data/private/school.private."+bedscode+".json"
+    url = "https://schoolcovidreportcard.health.ny.gov/data/private/school.private."+str(bedscode)+".json"
 
   r = requests.get(url)
 
